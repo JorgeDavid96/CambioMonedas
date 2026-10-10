@@ -1,5 +1,6 @@
 package controladores;
 
+import servicios.MonedasServicio;
 import vistas.MonedasVista;
 
 import java.time.LocalDate;
@@ -14,6 +15,16 @@ public class MonedasControlador {
 
         this.vista.setGraficarClick(evento -> graficar());
         this.vista.setCalcularEstadisticasClick(evento -> calcularEstadisticas());
+        cargarDatos();
+    }
+
+    private void cargarDatos(){
+        String nombreArchivo = System.getProperty("user.dir") + "/src/datos/Cambios Monedas.csv";
+        var cambiosMoneda=MonedasServicio.getDatos(nombreArchivo);
+
+        for(var cambioMoneda:cambiosMoneda){
+            System.out.println("Moneda:"+cambioMoneda.getMoneda()+" Fecha:"+cambioMoneda.getFecha());
+        }
     }
 
     private void graficar() {
