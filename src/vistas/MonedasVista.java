@@ -2,13 +2,17 @@ package vistas;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -119,10 +123,36 @@ public class MonedasVista extends JFrame {
         btnCalcularEstadisticas.addActionListener(evento);
     }
 
+    public void setMonedas(List<String> Monedas) {
+        cmbMoneda.setModel(new DefaultComboBoxModel(monedas.toArray()));
+    }
+
     // metodos publicos
     public void activarPestaña(int posicion) {
         if (posicion >= 0 && posicion < tpCambiosMoneda.getTabCount()) {
             tpCambiosMoneda.setSelectedIndex(posicion);
         }
+    }
+
+    public void graficar(ChartPanel pnlGraficador) {
+        pnlGrafica.removeAll();
+        pnlGrafica.setLayout(new BorderLayout());
+        pnlGrafica.add(pnlGraficador, BorderLayout.CENTER);
+        pnlGrafica.revalidate();
+    };
+
+    public void mostrarEstadistica(Map<String, Double> estadisticas) {
+        pnlGrafica.removeAll();
+        pnlGrafica.setLayout(new GridBagLayout());
+        var gbc = new GridBagConstraints();
+        gbc.gridy = 0;
+        estadisticas.forEach((clave, valor) -> {
+            gbc.gridx = 0;
+            pnlEstadisticas.add(new JLabel(clave), gbc);
+            gbc.gridx = 1;
+            pnlEstadisticas.add(new JLabel(String.format("%.2f", valor)), gbc);
+            gbc.gridy++;
+        });
+        pnlGrafica.revalidate();
     }
 }

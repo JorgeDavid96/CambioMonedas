@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,5 +29,66 @@ public class MonedasServicio {
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    public static List<String> getMonedas(List<CambioMoneda> cambios) {
+        return cambios.stream()
+            .map(CambioMoneda::getMoneda)
+            .distinct()
+            .sorted()
+            .collect(Collectors.toList());
+    }
+
+    public static List<CambioMoneda> filtrar(List<CambioMoneda> cambios, String moneda, LocalDate desde, LocalDate hasta) {
+        return cambios.stream()
+            .filter(cambio -> cambio.getMoneda().equals(moneda) && !cambio.getFecha().isAfter(hasta) && !cambio.getFecha().isBefore(desde)
+            )
+            .collect(Collectors.toList());
+    }
+
+    public static Map<LocalDate, Double> getDatosGrafica(List<CambioMoneda> cambios) {
+        return cambios.stream()
+            .collect(Collectors.toMap(CambioMoneda::getFecha, CambioMoneda::getCambio));
+    }
+
+    public static List<Double> getValores(List<CambioMoneda> cambios) {
+        return cambios.stream().map(CambioMoneda::getCambio).collect(Collectors.toList());
+    }
+
+    public static double getPromedio(List<Double> valores) {
+        return valores.stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
+    }
+
+    public static double getDesviacionSTD(List<Double> valores) {
+        var promedio = getPromedio(valores);
+        return valores.stream().mapToDouble(valor -> Math.abs(promedio-valor)).average().orElse(0.0);
+    }
+
+    public static double getMaximo(List<Double> valores) {
+        var promedio = getPromedio(valores);
+        return valores.stream().mapToDouble(valor -> Math.abs(promedio-valor)).max().orElse(0.0);
+    }
+
+    public static double getMinimo(List<Double> valores) {
+        var promedio = getPromedio(valores);
+        return valores.stream().mapToDouble(valor -> Math.abs(promedio-valor)).min().orElse(0.0);
+    }
+
+    public static double getMediana(List<Double> valores) {
+        if (valores.isEmpty()) {
+            return 0.0;
+        }
+        var valoresOrdenados = valores.stream().sorted().collect(Collectors.toList());
+        var n = valoresOrdenados.size();
+        return n % 2 == 1? valoresOrdenados.get(n/2) : (valoresOrdenados.get(n / 2) + valoresOrdenados.get(n / 2 - 1)) / 2;
+    }
+
+    public static double getModa(List<Double> valores) {
+        return valores.stream().collect(Collectors.groupingBy(valor -> valor, Collectors.counting())).entrySet().stream().max(Map.Entry.comparingByValue()).map(Map.Entry::getKey).orElse(0.0);
+    }
+
+    public static Map<String, Double> getEstadisticas(List<Double> valores) {
+        Map<String, Double> estadisticas = Map.of("Promedio", getPromedio(valores), "Desviacion Estandar", getDesviacionSTD(valores), "Maximo", getMaximo(valores), "Minimo", getMinimo(valores), "Mediana", getMediana(valores), "Moda", getModa(valores));
+        return estadisticas;
     }
 }
