@@ -88,7 +88,14 @@ public class MonedasServicio {
     }
 
     public static Map<String, Double> getEstadisticas(List<Double> valores) {
-        Map<String, Double> estadisticas = Map.of("Promedio", getPromedio(valores), "Desviacion Estandar", getDesviacionSTD(valores), "Maximo", getMaximo(valores), "Minimo", getMinimo(valores), "Mediana", getMediana(valores), "Moda", getModa(valores));
+        Map<String, Double> estadisticas = Map.of(
+            "Promedio", getPromedio(valores), 
+            "Desviacion Estandar", getDesviacionSTD(valores),
+            "Maximo", getMaximo(valores),
+            "Minimo", getMinimo(valores),
+            "Mediana", getMediana(valores),
+            "Moda", getModa(valores)
+        );
         return estadisticas;
     }
 }

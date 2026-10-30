@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -24,6 +23,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.WindowConstants;
 
+import org.jfree.chart.ChartPanel;
 
 import datechooser.beans.DateChooserCombo;
 
@@ -123,7 +123,7 @@ public class MonedasVista extends JFrame {
         btnCalcularEstadisticas.addActionListener(evento);
     }
 
-    public void setMonedas(List<String> Monedas) {
+    public void setMonedas(List<String> monedas) {
         cmbMoneda.setModel(new DefaultComboBoxModel(monedas.toArray()));
     }
 
@@ -142,8 +142,8 @@ public class MonedasVista extends JFrame {
     };
 
     public void mostrarEstadistica(Map<String, Double> estadisticas) {
-        pnlGrafica.removeAll();
-        pnlGrafica.setLayout(new GridBagLayout());
+        pnlEstadisticas.removeAll();
+        pnlEstadisticas.setLayout(new GridBagLayout());
         var gbc = new GridBagConstraints();
         gbc.gridy = 0;
         estadisticas.forEach((clave, valor) -> {
